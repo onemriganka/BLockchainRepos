@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Blockchain Working Demo</h1>
+
+        <!-- Section to Mine a New Block -->
+        <h2>Mine a New Block</h2>
+        <form id="mineBlockForm" method="POST" action="/mine_block">
+            <label for="data">Data:</label>
+            <input type="text" id="data" name="data" required>
+            <button type="submit">Mine Block</button>
+        </form>
+        <div id="mineBlockResult"></div>
+
+        <!-- Section to Get Entire Blockchain -->
+        <h2>Get Entire Blockchain</h2>
+        <button onclick="getBlockchain()">Get Blockchain</button>
+        <div id="blockchainResult"></div>
+
+        <!-- Section to Validate the Blockchain -->
+        <h2>Validate Blockchain</h2>
+        <button onclick="validateBlockchain()">Validate Blockchain</button>
+        <div id="validateResult"></div>
+
+        <!-- Section to Get Last Block -->
+        <h2>Get Last Block</h2>
+        <button onclick="getLastBlock()">Get Last Block</button>
+        <div id="lastBlockResult"></div>
+    </div>
+
+    <script>
+        // Fetch the entire blockchain
+        function getBlockchain() {
+            fetch('/blockchain')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('blockchainResult').innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Validate the blockchain
+        function validateBlockchain() {
+            fetch('/validate')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('validateResult').innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Fetch the last block
+        function getLastBlock() {
+            fetch('/blockchain/last')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('lastBlockResult').innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Submit form to mine a block
+        document.getElementById('mineBlockForm').onsubmit = function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/mine_block', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('mineBlockResult').innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    </script>
+</body>
+</html>
